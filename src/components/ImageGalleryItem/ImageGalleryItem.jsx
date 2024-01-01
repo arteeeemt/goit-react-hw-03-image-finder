@@ -1,19 +1,41 @@
-import { ImageGalleryItemStyled, ImageGalleryImg } from "./ImageGalleryItem.styled";
-import PropTypes from 'prop-types'
+import { Component } from 'react';
+import { GalleryImg, GalleryItem } from './ImageGalleryItem.styled';
+import { ModalWindow } from 'components/Modal/Modal';
 
-export const ImageGalleryItem = ({id, smallUrl, tags, onClickImageItem }) => (
-    <ImageGalleryItemStyled
-        key={id}
-        data-id={id}
-        onClick={onClickImageItem}
-    >
-        <ImageGalleryImg src={smallUrl} alt={tags} data-id={id} />
-    </ImageGalleryItemStyled>
-);
+export class ImageGalleryItem extends Component {
+  state = {
+    isModalOpen: false,
+  };
+  openModal = () => {
+    this.setState({
+      isModalOpen: true,
+    });
+  };
+  closeModal = () => {
+    this.setState({
+      isModalOpen: false,
+    });
+  };
+  render() {
+    const { isModalOpen } = this.state;
+    const { image } = this.props;
+    return (
+      <>
+        <GalleryItem>
+          <GalleryImg
+            src={image.webformatURL}
+            alt={image.tags}
+            onClick={this.openModal}
+          />
 
-ImageGalleryItem.propTypes = {
-    id: PropTypes.number.isRequired,
-    smallUrl: PropTypes.string.isRequired,
-    tags: PropTypes.string.isRequired,
-    onClickImageItem: PropTypes.func.isRequired,
-};
+          <ModalWindow
+            isOpen={isModalOpen}
+            largeImageURL={image.largeImageURL}
+            tags={image.tags}
+            onClose={this.closeModal}
+          />
+        </GalleryItem>
+      </>
+    );
+  }
+}
